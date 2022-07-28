@@ -1,35 +1,40 @@
 <template>
-  <div class="home container">
-    <SignInForm></SignInForm>
+  <div class="container">
+    <hgroup>
+      <h1>Formulario de Registro</h1>
+      <small>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae sapiente natus incidunt autem sint voluptatem.</small>
+    </hgroup>
+    <BasicInfo></BasicInfo>
+    <ContactInfo></ContactInfo>
+    <ServicesRequired></ServicesRequired>
+    <BusinessInfo></BusinessInfo>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import SignInForm from "@/components/Home/SignInForm.vue";
+import BasicInfo from "@/components/Register/BasicInfo.vue";
+import ContactInfo from "@/components/Register/ContactInfo.vue";
+import ServicesRequired from "@/components/Register/ServicesRequired.vue";
+import BusinessInfo from "@/components/Register/BusinessInfo.vue";
 
 export default {
-  name: "HomeView",
+  name: "RegisterView",
   components: {
-    SignInForm,
+    BasicInfo,
+    ContactInfo,
+    ServicesRequired,
+    BusinessInfo,
   },
 };
 </script>
 
 <style scoped>
-article {
-  padding: 0;
-  overflow: hidden;
-}
 
 article div {
   padding: 1rem;
 }
 
 @media (min-width: 576px) {
-  body > main {
-    padding: 1.25rem 0;
-  }
 
   article div {
     padding: 1.25rem;
@@ -37,9 +42,6 @@ article div {
 }
 
 @media (min-width: 768px) {
-  body > main {
-    padding: 1.5rem 0;
-  }
 
   article div {
     padding: 1.5rem;
@@ -47,9 +49,6 @@ article div {
 }
 
 @media (min-width: 992px) {
-  body > main {
-    padding: 1.75rem 0;
-  }
 
   article div {
     padding: 1.75rem;
@@ -57,19 +56,9 @@ article div {
 }
 
 @media (min-width: 1200px) {
-  body > main {
-    padding: 2rem 0;
-  }
-
   article div {
     padding: 2rem;
   }
-}
-
-/* Nav */
-summary[role="link"].secondary:is([aria-current], :hover, :active, :focus) {
-  background-color: transparent;
-  color: var(--secondary-hover);
 }
 
 /* Hero Image */
@@ -85,10 +74,5 @@ article div:nth-of-type(2) {
   .grid > div:nth-of-type(2) {
     display: block;
   }
-}
-
-/* Footer */
-body > footer {
-  padding: 1rem 0;
 }
 </style>
