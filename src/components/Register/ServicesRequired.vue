@@ -71,7 +71,7 @@
     </fieldset>
 
     <button
-      id="saveInfoServicesBtn"
+      id="saveServicesRequiredBtn"
       class="outline"
       @click="guardarBasicInfo(e)"
     >
@@ -81,17 +81,23 @@
 </template>
 
 <script>
+
+import { mapActions} from 'vuex';
+
 export default {
   methods: {
+    ...mapActions({
+      setBasicInfoStore: "registerStore/setBasicInfo",
+      setViewsStore: "registerStore/setViews",
+    }),
     guardarBasicInfo() {
-      let saveInfoServicesBtn = document.getElementById("saveInfoServicesBtn");
-      saveInfoServicesBtn.innerHTML = "GUARDANDO...";
-      saveInfoServicesBtn.setAttribute("aria-busy", "true");
+      let $saveServicesRequiredBtn = document.getElementById("saveServicesRequiredBtn");
+      $saveServicesRequiredBtn.innerHTML = "GUARDANDO...";
+      $saveServicesRequiredBtn.setAttribute("aria-busy", "true");
       setTimeout(() => {
-        saveInfoServicesBtn.innerHTML = "GUARDAR";
-        saveInfoServicesBtn.setAttribute("aria-busy", "false");
-        console.log("guardarBasicInfo");
-        console.log;
+        $saveServicesRequiredBtn.innerHTML = "GUARDAR";
+        $saveServicesRequiredBtn.setAttribute("aria-busy", "false");
+        this.setViewsStore('businessInfo');
       }, 1000);
     },
   },

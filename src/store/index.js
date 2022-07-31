@@ -1,6 +1,7 @@
 import { createStore } from 'vuex'
+import ModuleRegister from './modules/Register'
 
-export default createStore({
+const store = createStore({
   state: {
   },
   getters: {
@@ -12,3 +13,7 @@ export default createStore({
   modules: {
   }
 })
+
+store.registerModule('registerStore', ModuleRegister);
+
+export default store

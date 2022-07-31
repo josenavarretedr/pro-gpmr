@@ -4,18 +4,23 @@
       <h1>Formulario de Registro</h1>
       <small>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vitae sapiente natus incidunt autem sint voluptatem.</small>
     </hgroup>
-    <BasicInfo></BasicInfo>
-    <ContactInfo></ContactInfo>
-    <ServicesRequired></ServicesRequired>
-    <BusinessInfo></BusinessInfo>
+    <BasicInfo v-if="registerStore.views.basicInfo" ></BasicInfo>
+    <!-- <ContactInfo v-if="registerStore.views.contactInfo" ></ContactInfo> -->
+    <ContactInfo v-if="registerStore.views.contactInfo" ></ContactInfo>
+    <ServicesRequired v-if="registerStore.views.servicesRequired"  ></ServicesRequired>
+    <BusinessInfo v-if="registerStore.views.businessInfo" ></BusinessInfo>
   </div>
 </template>
 
 <script>
+// COMPONENTES:
 import BasicInfo from "@/components/Register/BasicInfo.vue";
 import ContactInfo from "@/components/Register/ContactInfo.vue";
 import ServicesRequired from "@/components/Register/ServicesRequired.vue";
 import BusinessInfo from "@/components/Register/BusinessInfo.vue";
+
+import { mapState} from "vuex";
+
 
 export default {
   name: "RegisterView",
@@ -25,6 +30,11 @@ export default {
     ServicesRequired,
     BusinessInfo,
   },
+  computed: {
+    ...mapState(['registerStore']),
+  },
+  methods: {
+  }
 };
 </script>
 
@@ -37,6 +47,7 @@ article div {
 @media (min-width: 576px) {
 
   article div {
+    transition: all 0.3s ease-in-out;
     padding: 1.25rem;
   }
 }

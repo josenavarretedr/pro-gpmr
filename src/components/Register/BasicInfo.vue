@@ -23,7 +23,7 @@
       />
     </div>
     <div class="grid">
-      <select id="genere" required v-model="genere">
+      <!-- <select id="genere" required v-model="genere">
         <option
           v-for="(option, index) in genereOptions"
           :key="index"
@@ -31,7 +31,27 @@
         >
           {{ option.text }}
         </option>
-      </select>
+      </select> -->
+      <fieldset class="genereRadios">
+        <legend>Género</legend>
+        <div class="genereRadios-div">
+          <label
+            v-for="(option, index) in genereOptions"
+            :key="index"
+            :for="option.value"
+          >
+            <input
+              type="radio"
+              :id="option.value"
+              name="size"
+              :value="option.value"
+              v-model="genereChecked"
+            />
+            {{ option.text }}
+            <i :class="option.icon"></i>
+          </label>
+        </div>
+      </fieldset>
       <label for="birthDate">
         Fecha de nacimiento 🎂
         <input
@@ -59,6 +79,7 @@
         placeholder="Número de documento"
         aria-label="Documento"
         required
+        v-model="numDocument"
       />
       <label for="date">
         {{ dateDocText }}
@@ -66,30 +87,29 @@
       </label>
     </div>
     <!-- Date -->
-    <button id="saveInfoBTn" class="outline" @click="guardarBasicInfo(e)">
+    <button id="saveBasicInfoBtn" class="outline" @click="guardarData()">
       GUARDAR
     </button>
   </article>
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
       name: "",
       lastName: "",
+      genereChecked: "",
+      birthDate: "",
       docID: "",
       numDocument: "",
-      genere: "",
-      birthDate: "",
       dateDoc: "",
-      phone: "",
-      phoneAdicional: "",
 
       docOptions: [
         {
           value: "",
-          text: "Documento de Identidad",
+          text: "Selecciona un documento...",
         },
         {
           value: "CI",
@@ -110,38 +130,46 @@ export default {
       ],
       genereOptions: [
         {
-          value: "",
-          text: "Genero",
-        },
-        {
           value: "M",
           text: "Masculino",
+          icon: "fa-solid fa-mars",
         },
         {
           value: "F",
           text: "Femenino",
+          icon: "fa-solid fa-venus",
         },
         {
           value: "O",
           text: "Otro",
+          icon: "fa-solid fa-venus-mars",
         },
       ],
     };
   },
   methods: {
-    saludar() {
-      console.log(this.docID);
-    },
-    guardarBasicInfo() {
-      let saveInfoBTn = document.getElementById("saveInfoBTn");
-      saveInfoBTn.innerHTML = "Guardando...";
-      saveInfoBTn.setAttribute("aria-busy", "true");
+    ...mapActions({
+      setBasicInfoStore: "registerStore/setBasicInfo",
+      setViewsStore: "registerStore/setViews",
+    }),
+    guardarData() {
+      let saveBasicInfoBtn = document.getElementById("saveBasicInfoBtn");
+      saveBasicInfoBtn.innerHTML = "Guardando...";
+      saveBasicInfoBtn.setAttribute("aria-busy", "true");
+      this.setBasicInfoStore({
+        name: this.name,
+        lastName: this.lastName,
+        genereChecked: this.genereChecked,
+        birthDate: this.birthDate,
+        docID: this.docID,
+        numDocument: this.numDocument,
+        dateDoc: this.dateDoc,
+      });
       setTimeout(() => {
-        saveInfoBTn.innerHTML = "Guardar";
-        saveInfoBTn.setAttribute("aria-busy", "false");
-        console.log("guardarBasicInfo");
-        console.log;
-      }, 1000);
+        saveBasicInfoBtn.innerHTML = "Guardar";
+        saveBasicInfoBtn.setAttribute("aria-busy", "false");
+        this.setViewsStore('contactInfo');
+      }, 700);
     },
   },
   computed: {
@@ -162,9 +190,19 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 article {
   padding: 1.25rem;
   /* overflow: hidden; */
+}
+
+.genereRadios {
+  &-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    height: 100%;
+  }
 }
 </style>
