@@ -81,11 +81,70 @@
         required
         v-model="numDocument"
       />
-      <label for="date">
+      <!-- <label for="date">
         {{ dateDocText }}
         <input type="date" id="date" name="date" v-model="dateDoc" />
-      </label>
+      </label> -->
     </div>
+    <div class="grid">
+      <select id="country" required v-model="country">
+        <option value="">Seleccione un país</option>
+        <option
+          v-for="(option, index) in countries.sort((a, b) =>
+            a.name.localeCompare(b.name)
+          )"
+          :key="index"
+          :value="option.code"
+        >
+          {{ option.name }} {{ option.emoji }}
+        </option>
+      </select>
+      <div class="departament">
+        <input
+          type="text"
+          name="departament"
+          placeholder="Región/Estado/Departamento"
+          aria-label="Región/Estado/Departamento"
+          required
+          v-model="departamentIDSelected"
+          v-if="!priorityCountry"
+        />
+        <select v-else id="departament" required v-model="departamentIDSelected">
+          <option value="">Seleccione un departamento</option>
+          <option
+            v-for="(option, index) in departaments"
+            :key="index"
+            :value="option.id"
+          >
+            {{ option.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="provinces" v-if="this.departamentIDSelected !== ''">
+        <input
+          type="text"
+          name="province"
+          placeholder="Ciudad"
+          aria-label="Ciudad"
+          required
+          v-model="provinceSelected"
+          v-if="!priorityCountry"
+        />
+        <select v-else id="province" required v-model="provinceSelected">
+          <option value="">Seleccione una ciudad</option>
+          <option
+            v-for="(option, index) in provincesToShow"
+            :key="index"
+            :value="option.name"
+          >
+            {{ option.name }}
+          </option>
+        </select>
+      </div>
+    </div>
+    <!-- <button @click="provincesToShow()">Prueba Peru</button> -->
+
     <!-- Date -->
     <button id="saveBasicInfoBtn" class="outline" @click="guardarData()">
       GUARDAR
@@ -95,6 +154,9 @@
 
 <script>
 import { mapActions } from "vuex";
+import provinciasPeru from "@/assets/data/peru/provinciasPeru.js";
+import colombiaAll from "@/assets/data/colombia/colombiaAll.js";
+
 export default {
   data() {
     return {
@@ -145,6 +207,13 @@ export default {
           icon: "fa-solid fa-venus-mars",
         },
       ],
+      countries: [],
+      country: "",
+      priorityCountry: false,
+      departaments: [],
+      departamentIDSelected: '',
+      provinces: [],
+      provinceSelected: "",
     };
   },
   methods: {
@@ -152,6 +221,18 @@ export default {
       setBasicInfoStore: "registerStore/setBasicInfo",
       setViewsStore: "registerStore/setViews",
     }),
+    async getPeru() {
+      try {
+        const response = await fetch(
+          "https://raw.githubusercontent.com/ernestorivero/Ubigeo-Peru/master/json/ubigeo_peru_2016_departamentos.json"
+        );
+        const data = await response.json();
+        this.departaments = data;
+        this.priorityCountry = true;
+      } catch (error) {
+        console.log(error);
+      }
+    },
     guardarData() {
       let saveBasicInfoBtn = document.getElementById("saveBasicInfoBtn");
       saveBasicInfoBtn.innerHTML = "Guardando...";
@@ -168,7 +249,7 @@ export default {
       setTimeout(() => {
         saveBasicInfoBtn.innerHTML = "Guardar";
         saveBasicInfoBtn.setAttribute("aria-busy", "false");
-        this.setViewsStore('contactInfo');
+        this.setViewsStore("contactInfo");
       }, 700);
     },
   },
@@ -184,6 +265,54 @@ export default {
         return "Fecha de vencimiento de tu documento de identidad";
       } else {
         return `Fecha de vencimiento de tu ${textFecha[0].text}`;
+      }
+    },
+    provincesToShow() {
+      if (this.country === "PE") {
+        let resultados = provinciasPeru.filter(
+          (provincia) => provincia.department_id === this.departamentIDSelected
+        );
+        return resultados;
+      } else if (this.country === "CO") {
+        let getDataFiltered = colombiaAll.filter(
+          (departamento) => departamento.id === this.departamentIDSelected
+        );
+        let resultados = [];
+        getDataFiltered[0].provinces.forEach((provincia) => {
+          resultados.push({
+            name: provincia,
+          });
+        });
+        return resultados;
+      } else {
+        return "hola";
+      }
+    },
+  },
+  created() {
+    const requestURLProvi =
+      "https://raw.githubusercontent.com/risan/country-flag-emoji-json/main/dist/index.json";
+
+    async function getCountries() {
+      const response = await fetch(requestURLProvi);
+      const data = await response.json();
+      return data;
+    }
+
+    getCountries().then((data) => {
+      this.countries = data;
+    });
+  },
+  watch: {
+    country(newCountry) {
+      this.priorityCountry = false;
+
+      if (newCountry === "PE") {
+        this.getPeru();
+      } else if (newCountry === "CO") {
+        this.getColombia();
+      } else {
+        this.priorityCountry = false;
       }
     },
   },
