@@ -2,7 +2,7 @@
   <article class="container">
     <hgroup>
       <h3>Información Básica</h3>
-      <small>Esta información nos ayuda a conocerte mejor.</small>
+      <small>Esta información nos ayuda a conocerte mejores.</small>
     </hgroup>
     <div class="grid">
       <input
